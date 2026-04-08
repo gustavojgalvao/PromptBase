@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PromptBase</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23e8643a'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Inter,sans-serif' font-weight='700' font-size='13' fill='white' opacity='.95'>%2F.</text></svg>" />
+  <meta name="description" content="Organize seus prompts de IA com elegância." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap"
+    rel="stylesheet" />
+  <style>
+    /* ─────────────────────────────────────────────
+   Tokens
+───────────────────────────────────────────── */
+    :root {
+      --bg: #111010;
+      --bg2: #161514;
+      --panel: #1c1a19;
+      --panel2: #221f1e;
+      --line: #2e2a28;
+      --line2: #3a3532;
+
+      --ink: #f0ece8;
+      --ink2: #a89f98;
+      --ink3: #5e5750;
+
+      --brand: #e8643a;
+      --brand-dim: rgba(232, 100, 58, .12);
+      --brand-glow: rgba(232, 100, 58, .28);
+
+      --cat-dna: #c97c2d;
+      --cat-copy: #c25d8a;
+      --cat-img: #4d9dd6;
+      --cat-db: #4aaa7a;
+      --cat-geral: #7b6fd4;
+
+      --r: 10px;
+      --r-lg: 16px;
+      --ease: cubic-bezier(.22, 1, .36, 1);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--line2);
+      border-radius: 9px;
+    }
+
+    ::selection {
+      background: var(--brand);
+      color: #fff;
+    }
+
+    /* ─────────────────────────────────────────────
+   Layout Shell
+───────────────────────────────────────────── */
+    .shell {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ─────────────────────────────────────────────
+   Sidebar
+───────────────────────────────────────────── */
+    aside {
+      background: var(--bg2);
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-logo {
+      padding: 28px 24px 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .logo-mark {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 7px;
+      background: var(--brand);
+      display: grid;
+      place-items: center;
+      font-size: .95rem;
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -.01em;
+    }
+
+    .logo-sub {
+      font-size: .7rem;
+      color: var(--ink3);
+      margin-top: 1px;
+      font-weight: 400;
+    }
+
+    .sidebar-section {
+      padding: 20px 16px 8px;
+    }
+
+    .sidebar-label {
+      font-size: .68rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ink3);
+      padding: 0 8px;
+      margin-bottom: 6px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: .845rem;
+      color: var(--ink2);
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      transition: background .15s, color .15s;
+      position: relative;
+    }
+
+    .nav-item svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      opacity: .7;
+    }
+
+    .nav-item:hover {
+      background: var(--panel);
+      color: var(--ink);
+    }
+
+    .nav-item.active {
+      background: var(--brand-dim);
+      color: var(--brand);
+    }
+
+    .nav-item.active svg {
+      opacity: 1;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      background: var(--panel2);
+      color: var(--ink2);
+      font-size: .68rem;
+      font-weight: 600;
+      padding: 1px 7px;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+    }
+
+    .nav-item.active .nav-badge {
+      background: var(--brand-dim);
+      color: var(--brand);
+      border-color: var(--brand-glow);
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 16px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sidebar-action {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: .845rem;
+      color: var(--ink2);
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      transition: background .15s, color .15s;
+    }
+
+    .sidebar-action svg {
+      width: 14px;
+      height: 14px;
+      opacity: .6;
+    }
+
+    .sidebar-action:hover {
+      background: var(--panel);
+      color: var(--ink);
+    }
+
+    /* ─────────────────────────────────────────────
+   Main Content
+───────────────────────────────────────────── */
+    main {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 28px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(17, 16, 16, .8);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .search-wrap {
+      flex: 1;
+      position: relative;
+      max-width: 380px;
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      color: var(--ink3);
+      pointer-events: none;
+    }
+
+    #searchInput {
+      width: 100%;
+      padding: 7px 11px 7px 34px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      font-size: .845rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    #searchInput::placeholder {
+      color: var(--ink3);
+    }
+
+    #searchInput:focus {
+      border-color: var(--line2);
+    }
+
+    .kbd {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: .65rem;
+      color: var(--ink3);
+      background: var(--panel2);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 1px 5px;
+      pointer-events: none;
+    }
+
+    .topbar-right {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+    }
+
+    /* ─────────────────────────────────────────────
+   Page Content
+───────────────────────────────────────────── */
+    .page {
+      flex: 1;
+      padding: 32px 28px;
+    }
+
+    .page-head {
+      margin-bottom: 28px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .page-title {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 1.8rem;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1;
+    }
+
+    .page-title em {
+      font-style: italic;
+      color: var(--brand);
+    }
+
+    .page-sub {
+      font-size: .82rem;
+      color: var(--ink3);
+      margin-top: 5px;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .filter-chip {
+      padding: 5px 13px;
+      border-radius: 20px;
+      font-size: .78rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--line);
+      background: none;
+      color: var(--ink2);
+      transition: all .15s;
+      white-space: nowrap;
+    }
+
+    .filter-chip:hover {
+      border-color: var(--line2);
+      color: var(--ink);
+    }
+
+    .filter-chip.active {
+      background: var(--brand-dim);
+      border-color: var(--brand-glow);
+      color: var(--brand);
+    }
+
+    /* ─────────────────────────────────────────────
+   Grid
+───────────────────────────────────────────── */
+    #grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(288px, 1fr));
+      gap: 16px;
+    }
+
+    /* ─────────────────────────────────────────────
+   Card
+───────────────────────────────────────────── */
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--r-lg);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      cursor: default;
+      transition: border-color .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease);
+      animation: cardIn .25s var(--ease) both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--brand-glow), transparent);
+      opacity: 0;
+      transition: opacity .3s;
+    }
+
+    .card:hover {
+      border-color: var(--line2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .4);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .card-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 5px;
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .card-tag::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .tag-dna {
+      color: var(--cat-dna);
+      background: rgba(201, 124, 45, .1);
+    }
+
+    .tag-copy {
+      color: var(--cat-copy);
+      background: rgba(194, 93, 138, .1);
+    }
+
+    .tag-img {
+      color: var(--cat-img);
+      background: rgba(77, 157, 214, .1);
+    }
+
+    .tag-db {
+      color: var(--cat-db);
+      background: rgba(74, 170, 122, .1);
+    }
+
+    .tag-geral {
+      color: var(--cat-geral);
+      background: rgba(123, 111, 212, .1);
+    }
+
+    .card-menu-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      background: none;
+      color: var(--ink3);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: all .15s;
+      flex-shrink: 0;
+    }
+
+    .card-menu-btn:hover {
+      background: var(--panel2);
+      border-color: var(--line);
+      color: var(--ink);
+    }
+
+    .card-menu-btn svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    .card-title {
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.4;
+      letter-spacing: -.01em;
+    }
+
+    .card-body {
+      font-size: .82rem;
+      color: var(--ink3);
+      line-height: 1.7;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-date {
+      font-size: .73rem;
+      color: var(--ink3);
+    }
+
+    .var-pill {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: .72rem;
+      color: var(--cat-geral);
+      background: rgba(123, 111, 212, .1);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 5px;
+    }
+
+    /* ─────────────────────────────────────────────
+   Buttons
+───────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+      transition: all .15s var(--ease);
+      white-space: nowrap;
+    }
+
+    .btn svg {
+      flex-shrink: 0;
+    }
+
+    .btn-primary {
+      background: var(--brand);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: .845rem;
+    }
+
+    .btn-primary:hover {
+      background: #d9572f;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px var(--brand-glow);
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      border-radius: 7px;
+      font-size: .8rem;
+    }
+
+    .btn-outline {
+      background: none;
+      border: 1px solid var(--line);
+      color: var(--ink2);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: .845rem;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--line2);
+      color: var(--ink);
+      background: var(--panel);
+    }
+
+    .btn-icon-sm {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: none;
+      color: var(--ink3);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: all .15s;
+      flex-shrink: 0;
+    }
+
+    .btn-icon-sm svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    .btn-icon-sm:hover {
+      background: var(--panel2);
+      border-color: var(--line2);
+      color: var(--ink);
+    }
+
+    .btn-icon-sm.copy:hover {
+      border-color: var(--brand-glow);
+      color: var(--brand);
+      background: var(--brand-dim);
+    }
+
+    .btn-icon-sm.del:hover {
+      border-color: rgba(220, 60, 60, .3);
+      color: #dc3c3c;
+      background: rgba(220, 60, 60, .08);
+    }
+
+    /* Copy main button inside card */
+    .btn-copy-card {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 11px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: none;
+      color: var(--ink2);
+      font-size: .77rem;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .15s;
+    }
+
+    .btn-copy-card:hover {
+      border-color: var(--brand-glow);
+      color: var(--brand);
+      background: var(--brand-dim);
+    }
+
+    .btn-copy-card svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    /* ─────────────────────────────────────────────
+   Empty State
+───────────────────────────────────────────── */
+    .empty {
+      grid-column: 1/-1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    .empty-art {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      border: 1px dashed var(--line2);
+      display: grid;
+      place-items: center;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: var(--ink3);
+    }
+
+    .empty h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--ink2);
+    }
+
+    .empty p {
+      font-size: .845rem;
+      color: var(--ink3);
+      max-width: 280px;
+      line-height: 1.6;
+    }
+
+    /* ─────────────────────────────────────────────
+   Overlay / Modal
+───────────────────────────────────────────── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0, 0, 0, .65);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
+    }
+
+    .overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--panel);
+      border: 1px solid var(--line2);
+      border-radius: 18px;
+      width: 100%;
+      max-width: 560px;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, .7), 0 0 0 1px rgba(255, 255, 255, .04);
+      transform: translateY(16px) scale(.98);
+      transition: transform .25s var(--ease);
+    }
+
+    .overlay.open .modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-head {
+      padding: 22px 24px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-head h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -.01em;
+    }
+
+    .modal-divider {
+      height: 1px;
+      background: var(--line);
+      margin: 0 24px;
+    }
+
+    .modal-body {
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-foot {
+      padding: 16px 24px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    /* ─────────────────────────────────────────────
+   Form
+───────────────────────────────────────────── */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: .78rem;
+      font-weight: 500;
+      color: var(--ink3);
+      letter-spacing: .01em;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      background: var(--bg2);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      font-family: inherit;
+      font-size: .875rem;
+      padding: 9px 12px;
+      outline: none;
+      transition: border-color .15s;
+      width: 100%;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px var(--brand-dim);
+    }
+
+    .field textarea {
+      min-height: 180px;
+      resize: vertical;
+      line-height: 1.65;
+    }
+
+    .field select option {
+      background: var(--panel2);
+    }
+
+    .field .helper {
+      font-size: .75rem;
+      color: var(--ink3);
+    }
+
+    .field .helper code {
+      background: var(--panel2);
+      color: var(--brand);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: .73rem;
+    }
+
+    /* ─────────────────────────────────────────────
+   Toast
+───────────────────────────────────────────── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 18px;
+      background: var(--panel2);
+      border: 1px solid var(--line2);
+      border-radius: 10px;
+      font-size: .845rem;
+      font-weight: 500;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .5);
+      transform: translateY(16px);
+      opacity: 0;
+      transition: all .3s var(--ease);
+      max-width: 300px;
+      pointer-events: none;
+    }
+
+    #toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    #toast.ok {
+      border-color: rgba(74, 170, 122, .4);
+    }
+
+    #toast.err {
+      border-color: rgba(220, 60, 60, .4);
+    }
+
+    #toast-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--cat-db);
+      flex-shrink: 0;
+    }
+
+    #toast.err #toast-dot {
+      background: #dc3c3c;
+    }
+
+    /* ─────────────────────────────────────────────
+   Responsive
+───────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        display: none;
+      }
+
+      .topbar {
+        padding: 12px 16px;
+      }
+
+      .page {
+        padding: 20px 16px;
+      }
+
+      .page-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      #grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="shell">
+
+    <!-- ════════════════════════════════════════
+     SIDEBAR
+════════════════════════════════════════ -->
+    <aside>
+      <div class="sidebar-logo">
+        <a href="#" class="logo-mark">
+          <div class="logo-icon"
+            style="font-family:'Inter',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:-.03em;color:#fff;line-height:1">
+            <span style="opacity:.7">/.</span>
+          </div>
+          <div>
+            <div class="logo-text">PromptBase</div>
+            <div class="logo-sub">Seu reservatório de prompts</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Biblioteca</div>
+        <button class="nav-item active" data-cat="">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <rect x="3" y="3" width="7" height="7" rx="1" />
+            <rect x="14" y="3" width="7" height="7" rx="1" />
+            <rect x="3" y="14" width="7" height="7" rx="1" />
+            <rect x="14" y="14" width="7" height="7" rx="1" />
+          </svg>
+          Todos os prompts
+          <span class="nav-badge" id="badgeAll">0</span>
+        </button>
+        <button class="nav-item" data-cat="DNA da Empresa">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+          DNA da Empresa
+          <span class="nav-badge" id="badgeDNA">0</span>
+        </button>
+        <button class="nav-item" data-cat="Copywriting">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
+          </svg>
+          Copywriting
+          <span class="nav-badge" id="badgeCopy">0</span>
+        </button>
+        <button class="nav-item" data-cat="Imagens">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <polyline points="21 15 16 10 5 21" />
+          </svg>
+          Imagens
+          <span class="nav-badge" id="badgeImg">0</span>
+        </button>
+        <button class="nav-item" data-cat="Banco de Dados">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <ellipse cx="12" cy="5" rx="9" ry="3" />
+            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+          </svg>
+          Banco de Dados
+          <span class="nav-badge" id="badgeDB">0</span>
+        </button>
+        <button class="nav-item" data-cat="Geral">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="2" y1="12" x2="22" y2="12" />
+            <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
+          </svg>
+          Geral
+          <span class="nav-badge" id="badgeGeral">0</span>
+        </button>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-action" id="exportBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          Exportar backup
+        </button>
+        <label class="sidebar-action" for="importFile" style="cursor:pointer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+          Importar arquivo
+        </label>
+        <input type="file" id="importFile" accept=".json,.txt,.csv" class="hidden" />
+      </div>
+    </aside>
+
+    <!-- ════════════════════════════════════════
+     MAIN
+════════════════════════════════════════ -->
+    <main>
+
+      <!-- Top bar -->
+      <div class="topbar">
+        <div class="search-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input type="text" id="searchInput" placeholder="Buscar prompts…" autocomplete="off" />
+          <span class="kbd">⌘K</span>
+        </div>
+        <div class="topbar-right">
+          <button class="btn btn-primary" id="newBtn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Novo prompt
+          </button>
+        </div>
+      </div>
+
+      <!-- Page body -->
+      <div class="page">
+        <div class="page-head">
+          <div>
+            <h1 class="page-title" id="pageTitle">Todos os <em>prompts</em></h1>
+            <p class="page-sub" id="pageSub">0 prompts salvos</p>
+          </div>
+        </div>
+
+        <!-- Grid -->
+        <div id="grid"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ════════════════════════════════════════
+     MODAL — Novo / Editar
+════════════════════════════════════════ -->
+  <div class="overlay" id="promptOverlay">
+    <div class="modal">
+      <div class="modal-head">
+        <h2 id="modalTitle">Novo prompt</h2>
+        <button class="btn-icon-sm" id="closeModalBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-divider"></div>
+      <div class="modal-body">
+        <div class="field">
+          <label for="mTitle">Título</label>
+          <input type="text" id="mTitle" placeholder="Um nome claro e objetivo…" />
+        </div>
+        <div class="field">
+          <label for="mCat">Categoria</label>
+          <select id="mCat">
+            <option value="">Escolha uma categoria…</option>
+            <option>DNA da Empresa</option>
+            <option>Copywriting</option>
+            <option>Imagens</option>
+            <option>Banco de Dados</option>
+            <option>Geral</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="mContent">Conteúdo</label>
+          <textarea id="mContent" placeholder="Cole ou escreva seu prompt aqui…"></textarea>
+          <span class="helper">Use <code>{{variavel}}</code> para inserir campos dinâmicos ao copiar.</span>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-outline" id="cancelModalBtn">Cancelar</button>
+        <button class="btn btn-primary" id="saveBtn">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+     MODAL — Variáveis
+════════════════════════════════════════ -->
+  <div class="overlay" id="varOverlay">
+    <div class="modal" style="max-width:420px">
+      <div class="modal-head">
+        <h2>Preencher variáveis</h2>
+        <button class="btn-icon-sm" id="closeVarBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-divider"></div>
+      <div class="modal-body" id="varFields"></div>
+      <div class="modal-foot">
+        <button class="btn btn-outline" id="cancelVarBtn">Cancelar</button>
+        <button class="btn btn-primary" id="copyVarBtn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+          </svg>
+          Copiar texto
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast">
+    <div id="toast-dot"></div>
+    <span id="toast-msg">Copiado!</span>
+  </div>
+
+  <script>
+    /* ─────────────────────────────────────────
+       Data
+    ───────────────────────────────────────── */
+    const KEY = 'promptbase_v1';
+    let prompts = JSON.parse(localStorage.getItem(KEY) || '[]');
+    let activeCat = '';
+    let editingId = null;
+    let pendingCopy = '';
+
+    const save = () => localStorage.setItem(KEY, JSON.stringify(prompts));
+    const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const trunc = (s, n = 160) => s.length > n ? s.slice(0, n) + '…' : s;
+    const slug = cat => ({
+      'DNA da Empresa': 'dna', 'Copywriting': 'copy',
+      'Imagens': 'img', 'Banco de Dados': 'db', 'Geral': 'geral'
+    })[cat] || 'geral';
+    const fmt = ts => new Date(ts).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+    const vars = c => [...new Set([...c.matchAll(/\{\{([^}]+)\}\}/g)].map(m => m[1].trim()))];
+
+    /* ─────────────────────────────────────────
+       Toast
+    ───────────────────────────────────────── */
+    let toastT;
+    function toast(msg, ok = true) {
+      const el = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      el.className = 'show ' + (ok ? 'ok' : 'err');
+      clearTimeout(toastT);
+      toastT = setTimeout(() => { el.className = ''; }, 2500);
+    }
+
+    /* ─────────────────────────────────────────
+       Badges
+    ───────────────────────────────────────── */
+    function updateBadges() {
+      const counts = { '': { n: prompts.length } };
+      prompts.forEach(p => { counts[p.category] = { n: (counts[p.category]?.n || 0) + 1 }; });
+      document.getElementById('badgeAll').textContent = prompts.length;
+      document.getElementById('badgeDNA').textContent = counts['DNA da Empresa']?.n || 0;
+      document.getElementById('badgeCopy').textContent = counts['Copywriting']?.n || 0;
+      document.getElementById('badgeImg').textContent = counts['Imagens']?.n || 0;
+      document.getElementById('badgeDB').textContent = counts['Banco de Dados']?.n || 0;
+      document.getElementById('badgeGeral').textContent = counts['Geral']?.n || 0;
+    }
+
+    /* ─────────────────────────────────────────
+       Render
+    ───────────────────────────────────────── */
+    function render() {
+      updateBadges();
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      const filtered = prompts.filter(p => {
+        const mq = !q || p.title.toLowerCase().includes(q) || p.content.toLowerCase().includes(q);
+        const mc = !activeCat || p.category === activeCat;
+        return mq && mc;
+      });
+
+      const titleEl = document.getElementById('pageTitle');
+      const subEl = document.getElementById('pageSub');
+      if (activeCat) {
+        titleEl.innerHTML = esc(activeCat);
+        subEl.textContent = `${filtered.length} prompt${filtered.length !== 1 ? 's' : ''}`;
+      } else {
+        titleEl.innerHTML = 'Todos os <em>prompts</em>';
+        subEl.textContent = `${prompts.length} prompt${prompts.length !== 1 ? 's' : ''} salvos`;
+      }
+
+      const grid = document.getElementById('grid');
+      if (!filtered.length) {
+        grid.innerHTML = `<div class="empty">
+      <div class="empty-art">✦</div>
+      <h3>${prompts.length ? 'Nada encontrado' : 'Sua biblioteca está vazia'}</h3>
+      <p>${prompts.length ? 'Ajuste sua busca ou mude de categoria.' : 'Crie seu primeiro prompt clicando no botão acima.'}</p>
+    </div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(p => {
+        const v = vars(p.content);
+        return `
+    <div class="card" data-id="${p.id}">
+      <div class="card-top">
+        <span class="card-tag tag-${slug(p.category)}">${esc(p.category)}</span>
+        <div style="display:flex;gap:4px">
+          <button class="btn-icon-sm" onclick="openEdit('${p.id}')" title="Editar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="btn-icon-sm del" onclick="delPrompt('${p.id}')" title="Deletar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="card-title">${esc(p.title)}</div>
+      <div class="card-body">${esc(trunc(p.content))}</div>
+      <div class="card-footer">
+        <div class="card-meta">
+          <span class="card-date">${fmt(p.createdAt)}</span>
+          ${v.length ? `<span class="var-pill">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            ${v.length} var${v.length > 1 ? 's' : ''}
+          </span>`: ''}
+        </div>
+        <button class="btn-copy-card" onclick="handleCopy('${p.id}')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copiar
+        </button>
+      </div>
+    </div>`;
+      }).join('');
+    }
+
+    /* ─────────────────────────────────────────
+       Modal helpers
+    ───────────────────────────────────────── */
+    function openPromptModal() {
+      document.getElementById('promptOverlay').classList.add('open');
+      setTimeout(() => document.getElementById('mTitle').focus(), 80);
+    }
+    function closePromptModal() {
+      document.getElementById('promptOverlay').classList.remove('open');
+    }
+    function openNew() {
+      editingId = null;
+      document.getElementById('modalTitle').textContent = 'Novo prompt';
+      document.getElementById('mTitle').value = '';
+      document.getElementById('mCat').value = '';
+      document.getElementById('mContent').value = '';
+      openPromptModal();
+    }
+    function openEdit(id) {
+      const p = prompts.find(x => x.id === id);
+      if (!p) return;
+      editingId = id;
+      document.getElementById('modalTitle').textContent = 'Editar prompt';
+      document.getElementById('mTitle').value = p.title;
+      document.getElementById('mCat').value = p.category;
+      document.getElementById('mContent').value = p.content;
+      openPromptModal();
+    }
+    function savePrompt() {
+      const title = document.getElementById('mTitle').value.trim();
+      const category = document.getElementById('mCat').value;
+      const content = document.getElementById('mContent').value.trim();
+      if (!title || !category || !content) { toast('Preencha todos os campos.', false); return; }
+      if (editingId) {
+        Object.assign(prompts.find(p => p.id === editingId), { title, category, content, updatedAt: Date.now() });
+        toast('Prompt atualizado.');
+      } else {
+        prompts.unshift({ id: uid(), title, category, content, createdAt: Date.now() });
+        toast('Prompt salvo!');
+      }
+      save(); closePromptModal(); render();
+    }
+    function delPrompt(id) {
+      if (!confirm('Deletar este prompt?')) return;
+      prompts = prompts.filter(p => p.id !== id);
+      save(); render(); toast('Prompt removido.');
+    }
+
+    /* ─────────────────────────────────────────
+       Copy with variables
+    ───────────────────────────────────────── */
+    function handleCopy(id) {
+      const p = prompts.find(x => x.id === id);
+      if (!p) return;
+      const v = vars(p.content);
+      if (!v.length) { doCopy(p.content); return; }
+      pendingCopy = p.content;
+      const cf = document.getElementById('varFields');
+      cf.innerHTML = `<p style="font-size:.8rem;color:var(--ink3);margin-bottom:4px">Substitua as variáveis encontradas:</p>`
+        + v.map(vv => `<div class="field">
+        <label>{{${esc(vv)}}}</label>
+        <input type="text" class="var-inp" data-v="${esc(vv)}" placeholder="${esc(vv)}…" />
+      </div>`).join('');
+      document.getElementById('varOverlay').classList.add('open');
+      setTimeout(() => cf.querySelector('.var-inp')?.focus(), 80);
+    }
+    function applyVarsCopy() {
+      let res = pendingCopy;
+      document.querySelectorAll('.var-inp').forEach(i => {
+        res = res.replaceAll(`{{${i.dataset.v}}}`, i.value);
+      });
+      doCopy(res);
+      document.getElementById('varOverlay').classList.remove('open');
+    }
+    function doCopy(text) {
+      navigator.clipboard.writeText(text)
+        .then(() => toast('Copiado para a área de transferência!'))
+        .catch(() => {
+          const t = document.createElement('textarea');
+          t.value = text; document.body.appendChild(t);
+          t.select(); document.execCommand('copy');
+          document.body.removeChild(t);
+          toast('Copiado!');
+        });
+    }
+
+    /* ─────────────────────────────────────────
+       Import / Export
+    ───────────────────────────────────────── */
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      const b = new Blob([JSON.stringify(prompts, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(b);
+      a.download = `promptbase_${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      toast('Backup exportado!');
+    });
+    document.getElementById('importFile').addEventListener('change', e => {
+      const f = e.target.files[0]; if (!f) return;
+      const ext = f.name.split('.').pop().toLowerCase();
+      const r = new FileReader();
+      r.onload = ev => {
+        const text = ev.target.result;
+        if (ext === 'json') importJSON(text);
+        else if (ext === 'csv') importCSV(text);
+        else importTXT(text);  // .txt e outros
+        e.target.value = '';
+      };
+      r.readAsText(f, 'UTF-8');
+    });
+
+    function importJSON(text) {
+      try {
+        const imp = JSON.parse(text);
+
+        /* ── Formato 1: backup do PromptBase (array de prompts) ── */
+        if (Array.isArray(imp)) {
+          const ids = new Set(prompts.map(p => p.id));
+          let n = 0;
+          imp.forEach(p => { if (p.title && p.content && !ids.has(p.id)) { prompts.unshift(p); n++; } });
+          save(); render();
+          toast(`${n} prompt(s) importado(s) do JSON!`);
+          return;
+        }
+
+        /* ── Formato 2: objeto agrupado { "categoria": [{name, prompt}] } ── */
+        if (typeof imp === 'object' && imp !== null) {
+          // Mapeamento de chaves para categorias do app
+          const catMap = {
+            image_generation: 'Imagens',
+            imagens: 'Imagens',
+            copywriting: 'Copywriting',
+            copy: 'Copywriting',
+            dna: 'DNA da Empresa',
+            dna_da_empresa: 'DNA da Empresa',
+            banco_de_dados: 'Banco de Dados',
+            database: 'Banco de Dados',
+            db: 'Banco de Dados',
+          };
+          const resolveCategory = key => {
+            const k = key.toLowerCase().replace(/[\s-]/g, '_');
+            return catMap[k] || 'Geral';
+          };
+
+          let n = 0;
+          for (const [key, items] of Object.entries(imp)) {
+            if (!Array.isArray(items)) continue;
+            const category = resolveCategory(key);
+            items.forEach(item => {
+              const title = (item.name || item.title || '').trim();
+              const content = (item.prompt || item.content || item.texto || '').trim();
+              if (!title || !content) return;
+              prompts.unshift({ id: uid(), title, category, content, createdAt: Date.now() });
+              n++;
+            });
+          }
+          save(); render();
+          toast(n ? `${n} prompt(s) importado(s) do JSON!` : 'Nenhum item válido encontrado.', !!n);
+          return;
+        }
+
+        throw new Error('Formato não reconhecido');
+      } catch (err) {
+        toast('JSON inválido ou fora do formato esperado.', false);
+      }
+    }
+
+    /* CSV: espera cabeçalho com colunas titulo/title, categoria/category, conteudo/content/prompt */
+    function importCSV(text) {
+      const lines = text.trim().split(/\r?\n/).filter(l => l.trim());
+      if (lines.length < 2) { toast('CSV vazio ou sem dados.', false); return; }
+      const headers = parseCSVRow(lines[0]).map(h => h.toLowerCase().trim());
+      const ti = headers.findIndex(h => /t[ií]tulo|title|nome/.test(h));
+      const ci = headers.findIndex(h => /categoria|category/.test(h));
+      const coi = headers.findIndex(h => /conte[uú]do|content|texto|prompt/.test(h));
+      let n = 0;
+      for (let i = 1; i < lines.length; i++) {
+        const cols = parseCSVRow(lines[i]);
+        const title = (ti >= 0 && cols[ti] ? cols[ti].trim() : null) || `Prompt CSV #${i}`;
+        const catRaw = (ci >= 0 && cols[ci] ? cols[ci].trim() : '');
+        const category = normalizeCategory(catRaw);
+        const content = (coi >= 0 && cols[coi] ? cols[coi].trim() : cols.join(' ').trim());
+        if (!content) continue;
+        prompts.unshift({ id: uid(), title, category, content, createdAt: Date.now() });
+        n++;
+      }
+      save(); render();
+      toast(n ? `${n} prompt(s) importado(s) do CSV!` : 'Nenhum dado encontrado no CSV.');
+    }
+
+    function parseCSVRow(row) {
+      const res = []; let cur = '', inQ = false;
+      for (const c of row) {
+        if (c === '"') { inQ = !inQ; }
+        else if (c === ',' && !inQ) { res.push(cur); cur = ''; }
+        else { cur += c; }
+      }
+      res.push(cur);
+      return res.map(v => v.trim().replace(/^"|"$/g, ''));
+    }
+
+    function normalizeCategory(raw) {
+      const cats = ['DNA da Empresa', 'Copywriting', 'Imagens', 'Banco de Dados', 'Geral'];
+      return cats.find(c => c.toLowerCase() === raw.toLowerCase()) || 'Geral';
+    }
+
+    /* TXT: abre o modal de criação com o conteúdo pré-preenchido */
+    function importTXT(text) {
+      editingId = null;
+      document.getElementById('modalTitle').textContent = 'Novo prompt (texto importado)';
+      document.getElementById('mTitle').value = '';
+      document.getElementById('mCat').value = '';
+      document.getElementById('mContent').value = text.trim();
+      openPromptModal();
+      toast('Conteúdo carregado — adicione título e categoria.');
+    }
+
+    /* ─────────────────────────────────────────
+       Nav (sidebar filtering)
+    ───────────────────────────────────────── */
+    document.querySelectorAll('.nav-item[data-cat]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeCat = btn.dataset.cat;
+        render();
+      });
+    });
+
+    /* ─────────────────────────────────────────
+       Events
+    ───────────────────────────────────────── */
+    document.getElementById('newBtn').addEventListener('click', openNew);
+    document.getElementById('closeModalBtn').addEventListener('click', closePromptModal);
+    document.getElementById('cancelModalBtn').addEventListener('click', closePromptModal);
+    document.getElementById('saveBtn').addEventListener('click', savePrompt);
+    document.getElementById('closeVarBtn').addEventListener('click', () => document.getElementById('varOverlay').classList.remove('open'));
+    document.getElementById('cancelVarBtn').addEventListener('click', () => document.getElementById('varOverlay').classList.remove('open'));
+    document.getElementById('copyVarBtn').addEventListener('click', applyVarsCopy);
+    document.getElementById('searchInput').addEventListener('input', render);
+
+    // Backdrop
+    ['promptOverlay', 'varOverlay'].forEach(id => {
+      document.getElementById(id).addEventListener('click', e => {
+        if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+      });
+    });
+
+    // Keyboard
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        closePromptModal();
+        document.getElementById('varOverlay').classList.remove('open');
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        document.getElementById('searchInput').focus();
+      }
+    });
+
+    /* ─────────────────────────────────────────
+       Init
+    ───────────────────────────────────────── */
+    render();
+  </script>
+</body>
+
+</html>
