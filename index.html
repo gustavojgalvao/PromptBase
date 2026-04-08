@@ -7,6 +7,10 @@
   <title>PromptBase</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23e8643a'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Inter,sans-serif' font-weight='700' font-size='13' fill='white' opacity='.95'>%2F.</text></svg>" />
   <meta name="description" content="Organize seus prompts de IA com elegância." />
+  <meta name="theme-color" content="#e8643a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="PromptBase" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap"
@@ -930,36 +934,84 @@
     /* ─────────────────────────────────────────────
    Responsive
 ───────────────────────────────────────────── */
+    /* ── Mobile-only elements (hidden on desktop) ─────────────── */
+    .mobile-logo-item { display: none; }
+
+    .mobile-cats {
+      display: none;
+      overflow-x: auto;
+      gap: 8px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--line);
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      flex-shrink: 0;
+      background: var(--bg2);
+    }
+    .mobile-cats::-webkit-scrollbar { display: none; }
+
+    .mcat-chip {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      background: none;
+      color: var(--ink2);
+      font-size: .8rem;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all .15s;
+      flex-shrink: 0;
+    }
+    .mcat-chip:hover { border-color: var(--line2); color: var(--ink); }
+    .mcat-chip.active { background: var(--brand-dim); border-color: var(--brand-glow); color: var(--brand); }
+
+    .fab {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      right: 20px;
+      z-index: 100;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--brand);
+      border: none;
+      cursor: pointer;
+      place-items: center;
+      box-shadow: 0 4px 20px var(--brand-glow);
+      color: #fff;
+      transition: transform .2s var(--ease), box-shadow .2s;
+    }
+    .fab:hover { transform: scale(1.08); box-shadow: 0 6px 28px var(--brand-glow); }
+    .fab:active { transform: scale(.96); }
+    .fab svg { width: 22px; height: 22px; }
+
+    /* ── Responsive ─────────────────────────────────────────────── */
     @media (max-width: 768px) {
-      .shell {
-        grid-template-columns: 1fr;
-      }
+      .shell { grid-template-columns: 1fr; }
+      aside { display: none; }
 
-      aside {
-        display: none;
-      }
+      /* Show mobile elements */
+      .mobile-logo-item { display: flex; align-items: center; gap: 8px; text-decoration: none; flex-shrink: 0; }
+      .mobile-cats { display: flex; }
+      .fab { display: grid; }
 
-      .topbar {
-        padding: 12px 16px;
-      }
+      /* Adjust topbar */
+      .topbar { padding: 10px 14px; gap: 10px; }
+      .search-wrap { max-width: none; }
+      .kbd { display: none; }
+      #newBtn { display: none; }
 
-      .page {
-        padding: 20px 16px;
-      }
-
-      .page-head {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      #grid {
-        grid-template-columns: 1fr;
-      }
+      /* Page */
+      .page { padding: 16px; padding-bottom: 88px; }
+      .page-head { flex-direction: column; align-items: flex-start; }
+      .page-title { font-size: 1.4rem; }
+      #grid { grid-template-columns: 1fr; }
     }
 
-    .hidden {
-      display: none !important;
-    }
+    .hidden { display: none !important; }
   </style>
 </head>
 
@@ -1068,6 +1120,13 @@
 
       <!-- Top bar -->
       <div class="topbar">
+        <!-- Logo mobile (oculto no desktop) -->
+        <a href="#" class="logo-mark mobile-logo-item">
+          <div class="logo-icon" style="font-family:'Inter',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:-.03em;color:#fff;line-height:1;width:28px;height:28px;border-radius:6px;flex-shrink:0">
+            <span style="opacity:.75">/.</span>
+          </div>
+          <span class="logo-text" style="font-size:.9rem">PromptBase</span>
+        </a>
         <div class="search-wrap">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="8" />
@@ -1085,6 +1144,16 @@
             Novo prompt
           </button>
         </div>
+      </div>
+
+      <!-- Chips de categoria (mobile) -->
+      <div class="mobile-cats" id="mobileCats">
+        <button class="mcat-chip active" data-mcat="">Todos</button>
+        <button class="mcat-chip" data-mcat="DNA da Empresa">DNA</button>
+        <button class="mcat-chip" data-mcat="Copywriting">Copy</button>
+        <button class="mcat-chip" data-mcat="Imagens">Imagens</button>
+        <button class="mcat-chip" data-mcat="Banco de Dados">Dados</button>
+        <button class="mcat-chip" data-mcat="Geral">Geral</button>
       </div>
 
       <!-- Page body -->
@@ -1174,6 +1243,13 @@
       </div>
     </div>
   </div>
+
+  <!-- FAB: botão flutuante (mobile) -->
+  <button class="fab" id="fabBtn" aria-label="Novo prompt">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+  </button>
 
   <!-- Toast -->
   <div id="toast">
@@ -1514,11 +1590,14 @@
     /* ─────────────────────────────────────────
        Nav (sidebar filtering)
     ───────────────────────────────────────── */
+    /* Sidebar nav — sync with mobile chips */
     document.querySelectorAll('.nav-item[data-cat]').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         activeCat = btn.dataset.cat;
+        document.querySelectorAll('.mcat-chip').forEach(c =>
+          c.classList.toggle('active', c.dataset.mcat === activeCat));
         render();
       });
     });
@@ -1527,6 +1606,7 @@
        Events
     ───────────────────────────────────────── */
     document.getElementById('newBtn').addEventListener('click', openNew);
+    document.getElementById('fabBtn').addEventListener('click', openNew);
     document.getElementById('closeModalBtn').addEventListener('click', closePromptModal);
     document.getElementById('cancelModalBtn').addEventListener('click', closePromptModal);
     document.getElementById('saveBtn').addEventListener('click', savePrompt);
@@ -1534,6 +1614,18 @@
     document.getElementById('cancelVarBtn').addEventListener('click', () => document.getElementById('varOverlay').classList.remove('open'));
     document.getElementById('copyVarBtn').addEventListener('click', applyVarsCopy);
     document.getElementById('searchInput').addEventListener('input', render);
+
+    /* Mobile category chips */
+    document.querySelectorAll('.mcat-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.mcat-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        activeCat = chip.dataset.mcat;
+        document.querySelectorAll('.nav-item[data-cat]').forEach(b =>
+          b.classList.toggle('active', b.dataset.cat === activeCat));
+        render();
+      });
+    });
 
     // Backdrop
     ['promptOverlay', 'varOverlay'].forEach(id => {
@@ -1558,6 +1650,72 @@
        Init
     ───────────────────────────────────────── */
     render();
+
+    /* ─────────────────────────────────────────
+       PWA — Manifest + ícone PNG via Canvas
+    ───────────────────────────────────────── */
+    (function () {
+      /* Gera o ícone como PNG usando Canvas (necessário para iOS) */
+      function buildIcon(size) {
+        const c = document.createElement('canvas');
+        c.width = c.height = size;
+        const ctx = c.getContext('2d');
+        const r = size * 0.2; // border-radius proporcional
+
+        /* Fundo arredondado */
+        ctx.beginPath();
+        ctx.moveTo(r, 0);
+        ctx.lineTo(size - r, 0);
+        ctx.arcTo(size, 0, size, r, r);
+        ctx.lineTo(size, size - r);
+        ctx.arcTo(size, size, size - r, size, r);
+        ctx.lineTo(r, size);
+        ctx.arcTo(0, size, 0, size - r, r);
+        ctx.lineTo(0, r);
+        ctx.arcTo(0, 0, r, 0, r);
+        ctx.closePath();
+        ctx.fillStyle = '#e8643a';
+        ctx.fill();
+
+        /* Texto "/." */
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.font = `bold ${size * 0.46}px Inter, system-ui, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('/.', size * 0.5, size * 0.54);
+
+        return c.toDataURL('image/png');
+      }
+
+      const icon512 = buildIcon(512);
+      const icon192 = buildIcon(192);
+
+      /* apple-touch-icon (iOS "Adicionar à Tela de Início") */
+      const atLink = document.createElement('link');
+      atLink.rel = 'apple-touch-icon';
+      atLink.href = icon512;
+      document.head.appendChild(atLink);
+
+      /* Web App Manifest */
+      const manifest = {
+        name: 'PromptBase',
+        short_name: 'PromptBase',
+        description: 'Organize seus prompts de IA com elegância.',
+        start_url: './',
+        display: 'standalone',
+        background_color: '#111010',
+        theme_color: '#e8643a',
+        icons: [
+          { src: icon192, sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: icon512, sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+        ]
+      };
+      const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+      const mLink = document.createElement('link');
+      mLink.rel = 'manifest';
+      mLink.href = URL.createObjectURL(blob);
+      document.head.appendChild(mLink);
+    })();
   </script>
 </body>
 
