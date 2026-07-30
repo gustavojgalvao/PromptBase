@@ -13,7 +13,7 @@
   <meta name="apple-mobile-web-app-title" content="PromptBase" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=Fira+Code:wght@400;500&display=swap"
     rel="stylesheet" />
   <style>
     /* ─────────────────────────────────────────────
@@ -39,6 +39,8 @@
       --cat-copy: #c25d8a;
       --cat-img: #4d9dd6;
       --cat-db: #4aaa7a;
+      --cat-roadmap: #a855f7;
+      --cat-checklist: #10b981;
       --cat-geral: #7b6fd4;
 
       --r: 10px;
@@ -64,6 +66,7 @@
       color: var(--ink);
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
     ::-webkit-scrollbar {
@@ -90,7 +93,7 @@
 ───────────────────────────────────────────── */
     .shell {
       display: grid;
-      grid-template-columns: 240px 1fr;
+      grid-template-columns: 250px 1fr;
       min-height: 100vh;
     }
 
@@ -106,10 +109,11 @@
       top: 0;
       height: 100vh;
       overflow-y: auto;
+      z-index: 60;
     }
 
     .sidebar-logo {
-      padding: 28px 24px 22px;
+      padding: 24px 20px 18px;
       border-bottom: 1px solid var(--line);
     }
 
@@ -121,8 +125,8 @@
     }
 
     .logo-icon {
-      width: 30px;
-      height: 30px;
+      width: 32px;
+      height: 32px;
       border-radius: 7px;
       background: var(--brand);
       display: grid;
@@ -146,7 +150,7 @@
     }
 
     .sidebar-section {
-      padding: 20px 16px 8px;
+      padding: 16px 14px 6px;
     }
 
     .sidebar-label {
@@ -216,11 +220,11 @@
 
     .sidebar-footer {
       margin-top: auto;
-      padding: 16px;
+      padding: 14px 16px;
       border-top: 1px solid var(--line);
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
     .sidebar-action {
@@ -258,6 +262,7 @@
       flex-direction: column;
       min-height: 100vh;
       overflow: hidden;
+      position: relative;
     }
 
     .topbar {
@@ -266,7 +271,7 @@
       gap: 12px;
       padding: 14px 28px;
       border-bottom: 1px solid var(--line);
-      background: rgba(17, 16, 16, .8);
+      background: rgba(17, 16, 16, .85);
       backdrop-filter: blur(12px);
       position: sticky;
       top: 0;
@@ -332,8 +337,14 @@
     }
 
     /* ─────────────────────────────────────────────
-   Page Content
+   Page Views (Library & Graph)
 ───────────────────────────────────────────── */
+    .page-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
     .page {
       flex: 1;
       padding: 32px 28px;
@@ -366,39 +377,8 @@
       margin-top: 5px;
     }
 
-    .filter-row {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-bottom: 24px;
-    }
-
-    .filter-chip {
-      padding: 5px 13px;
-      border-radius: 20px;
-      font-size: .78rem;
-      font-weight: 500;
-      cursor: pointer;
-      border: 1px solid var(--line);
-      background: none;
-      color: var(--ink2);
-      transition: all .15s;
-      white-space: nowrap;
-    }
-
-    .filter-chip:hover {
-      border-color: var(--line2);
-      color: var(--ink);
-    }
-
-    .filter-chip.active {
-      background: var(--brand-dim);
-      border-color: var(--brand-glow);
-      color: var(--brand);
-    }
-
     /* ─────────────────────────────────────────────
-   Grid
+   Grid & Cards
 ───────────────────────────────────────────── */
     #grid {
       display: grid;
@@ -406,9 +386,6 @@
       gap: 16px;
     }
 
-    /* ─────────────────────────────────────────────
-   Card
-───────────────────────────────────────────── */
     .card {
       background: var(--panel);
       border: 1px solid var(--line);
@@ -417,7 +394,7 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
-      cursor: default;
+      cursor: pointer;
       transition: border-color .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease);
       animation: cardIn .25s var(--ease) both;
       position: relative;
@@ -486,55 +463,13 @@
       background: currentColor;
     }
 
-    .tag-dna {
-      color: var(--cat-dna);
-      background: rgba(201, 124, 45, .1);
-    }
-
-    .tag-copy {
-      color: var(--cat-copy);
-      background: rgba(194, 93, 138, .1);
-    }
-
-    .tag-img {
-      color: var(--cat-img);
-      background: rgba(77, 157, 214, .1);
-    }
-
-    .tag-db {
-      color: var(--cat-db);
-      background: rgba(74, 170, 122, .1);
-    }
-
-    .tag-geral {
-      color: var(--cat-geral);
-      background: rgba(123, 111, 212, .1);
-    }
-
-    .card-menu-btn {
-      width: 26px;
-      height: 26px;
-      border-radius: 6px;
-      border: 1px solid transparent;
-      background: none;
-      color: var(--ink3);
-      cursor: pointer;
-      display: grid;
-      place-items: center;
-      transition: all .15s;
-      flex-shrink: 0;
-    }
-
-    .card-menu-btn:hover {
-      background: var(--panel2);
-      border-color: var(--line);
-      color: var(--ink);
-    }
-
-    .card-menu-btn svg {
-      width: 13px;
-      height: 13px;
-    }
+    .tag-dna { color: var(--cat-dna); background: rgba(201, 124, 45, .1); }
+    .tag-copy { color: var(--cat-copy); background: rgba(194, 93, 138, .1); }
+    .tag-img { color: var(--cat-img); background: rgba(77, 157, 214, .1); }
+    .tag-db { color: var(--cat-db); background: rgba(74, 170, 122, .1); }
+    .tag-roadmap { color: var(--cat-roadmap); background: rgba(168, 85, 247, .1); }
+    .tag-checklist { color: var(--cat-checklist); background: rgba(16, 185, 129, .1); }
+    .tag-geral { color: var(--cat-geral); background: rgba(123, 111, 212, .1); }
 
     .card-title {
       font-size: .95rem;
@@ -567,7 +502,8 @@
     .card-meta {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .card-date {
@@ -575,15 +511,23 @@
       color: var(--ink3);
     }
 
-    .var-pill {
+    .var-pill, .conn-pill {
       display: flex;
       align-items: center;
       gap: 4px;
       font-size: .72rem;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    .var-pill {
       color: var(--cat-geral);
       background: rgba(123, 111, 212, .1);
-      padding: 2px 8px;
-      border-radius: 4px;
+    }
+
+    .conn-pill {
+      color: var(--brand);
+      background: var(--brand-dim);
     }
 
     .card-actions {
@@ -682,7 +626,6 @@
       background: rgba(220, 60, 60, .08);
     }
 
-    /* Copy main button inside card */
     .btn-copy-card {
       display: inline-flex;
       align-items: center;
@@ -749,13 +692,13 @@
     }
 
     /* ─────────────────────────────────────────────
-   Overlay / Modal
+   Overlay / Modals
 ───────────────────────────────────────────── */
     .overlay {
       position: fixed;
       inset: 0;
       z-index: 200;
-      background: rgba(0, 0, 0, .65);
+      background: rgba(0, 0, 0, .7);
       backdrop-filter: blur(6px);
       display: flex;
       align-items: center;
@@ -777,9 +720,13 @@
       border-radius: 18px;
       width: 100%;
       max-width: 560px;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
       box-shadow: 0 32px 80px rgba(0, 0, 0, .7), 0 0 0 1px rgba(255, 255, 255, .04);
       transform: translateY(16px) scale(.98);
       transition: transform .25s var(--ease);
+      overflow: hidden;
     }
 
     .overlay.open .modal {
@@ -787,22 +734,18 @@
     }
 
     .modal-head {
-      padding: 22px 24px 18px;
+      padding: 20px 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+      flex-shrink: 0;
     }
 
     .modal-head h2 {
-      font-size: 1rem;
+      font-size: 1.05rem;
       font-weight: 600;
       letter-spacing: -.01em;
-    }
-
-    .modal-divider {
-      height: 1px;
-      background: var(--line);
-      margin: 0 24px;
     }
 
     .modal-body {
@@ -810,6 +753,8 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
+      overflow-y: auto;
+      flex: 1;
     }
 
     .modal-foot {
@@ -818,10 +763,104 @@
       display: flex;
       justify-content: flex-end;
       gap: 8px;
+      flex-shrink: 0;
+      background: var(--panel);
     }
 
     /* ─────────────────────────────────────────────
-   Form
+   Reader View Modal
+───────────────────────────────────────────── */
+    .reader-modal {
+      max-width: 760px;
+      width: 100%;
+    }
+
+    .reader-header-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .reader-title {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 2rem;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.25;
+      margin-bottom: 16px;
+    }
+
+    .reader-content-box {
+      background: var(--bg2);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px;
+      color: var(--ink);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: .92rem;
+      line-height: 1.75;
+      white-space: pre-wrap;
+      word-break: break-word;
+      user-select: text;
+      max-height: 50vh;
+      overflow-y: auto;
+    }
+
+    .reader-content-box .var-highlight {
+      background: var(--brand-dim);
+      color: var(--brand);
+      border: 1px solid var(--brand-glow);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+      font-size: .85em;
+      font-weight: 500;
+    }
+
+    .reader-links-section {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .reader-links-title {
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--ink3);
+      margin-bottom: 10px;
+    }
+
+    .reader-link-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .reader-link-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--panel2);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink2);
+      font-size: .8rem;
+      cursor: pointer;
+      transition: all .15s;
+    }
+
+    .reader-link-chip:hover {
+      border-color: var(--brand-glow);
+      color: var(--brand);
+      background: var(--brand-dim);
+    }
+
+    /* ─────────────────────────────────────────────
+   Form Controls
 ───────────────────────────────────────────── */
     .field {
       display: flex;
@@ -881,6 +920,114 @@
       font-size: .73rem;
     }
 
+    /* Connection selector list */
+    .conn-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 260px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .conn-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      background: var(--bg2);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color .15s;
+    }
+
+    .conn-item:hover {
+      border-color: var(--line2);
+    }
+
+    .conn-item.selected {
+      border-color: var(--brand-glow);
+      background: var(--brand-dim);
+    }
+
+    .conn-item-title {
+      font-size: .85rem;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    /* ─────────────────────────────────────────────
+   Graph View Section
+───────────────────────────────────────────── */
+    #graphPage {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 61px);
+      position: relative;
+    }
+
+    .graph-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--line);
+      background: var(--bg2);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .graph-filters {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .graph-chip {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: .75rem;
+      font-weight: 500;
+      border: 1px solid var(--line);
+      background: none;
+      color: var(--ink2);
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+
+    .graph-chip:hover {
+      border-color: var(--line2);
+      color: var(--ink);
+    }
+
+    .graph-chip.active {
+      background: var(--brand-dim);
+      border-color: var(--brand-glow);
+      color: var(--brand);
+    }
+
+    .graph-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #graphCanvas {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      cursor: grab;
+    }
+
+    #graphCanvas:active {
+      cursor: grabbing;
+    }
+
     /* ─────────────────────────────────────────────
    Toast
 ───────────────────────────────────────────── */
@@ -934,7 +1081,6 @@
     /* ─────────────────────────────────────────────
    Responsive
 ───────────────────────────────────────────── */
-    /* ── Mobile-only elements (hidden on desktop) ─────────────── */
     .mobile-logo-item { display: none; }
 
     .mobile-cats {
@@ -988,23 +1134,19 @@
     .fab:active { transform: scale(.96); }
     .fab svg { width: 22px; height: 22px; }
 
-    /* ── Responsive ─────────────────────────────────────────────── */
     @media (max-width: 768px) {
       .shell { grid-template-columns: 1fr; }
       aside { display: none; }
 
-      /* Show mobile elements */
       .mobile-logo-item { display: flex; align-items: center; gap: 8px; text-decoration: none; flex-shrink: 0; }
       .mobile-cats { display: flex; }
       .fab { display: grid; }
 
-      /* Adjust topbar */
       .topbar { padding: 10px 14px; gap: 10px; }
       .search-wrap { max-width: none; }
       .kbd { display: none; }
       #newBtn { display: none; }
 
-      /* Page */
       .page { padding: 16px; padding-bottom: 88px; }
       .page-head { flex-direction: column; align-items: flex-start; }
       .page-title { font-size: 1.4rem; }
@@ -1037,15 +1179,36 @@
       </div>
 
       <div class="sidebar-section">
-        <div class="sidebar-label">Biblioteca</div>
-        <button class="nav-item active" data-cat="">
+        <div class="sidebar-label">Navegação</div>
+        <button class="nav-item active" data-view="library">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
             <rect x="3" y="3" width="7" height="7" rx="1" />
             <rect x="14" y="3" width="7" height="7" rx="1" />
             <rect x="3" y="14" width="7" height="7" rx="1" />
             <rect x="14" y="14" width="7" height="7" rx="1" />
           </svg>
-          Todos os prompts
+          Biblioteca
+        </button>
+        <button class="nav-item" data-view="graph">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <circle cx="6" cy="6" r="3" />
+            <circle cx="18" cy="6" r="3" />
+            <circle cx="12" cy="18" r="3" />
+            <line x1="8.5" y1="7.5" x2="15.5" y2="7.5" />
+            <line x1="7.5" y1="8.5" x2="10.5" y2="15.5" />
+            <line x1="16.5" y1="8.5" x2="13.5" y2="15.5" />
+          </svg>
+          Grafo de Conexões
+        </button>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-label">Categorias</div>
+        <button class="nav-item active" data-cat="">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <circle cx="12" cy="12" r="9" />
+          </svg>
+          Todas
           <span class="nav-badge" id="badgeAll">0</span>
         </button>
         <button class="nav-item" data-cat="DNA da Empresa">
@@ -1080,6 +1243,21 @@
           </svg>
           Banco de Dados
           <span class="nav-badge" id="badgeDB">0</span>
+        </button>
+        <button class="nav-item" data-cat="Roadmap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+          </svg>
+          Roadmap
+          <span class="nav-badge" id="badgeRoadmap">0</span>
+        </button>
+        <button class="nav-item" data-cat="Checklist">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <path d="M9 11l3 3L22 4" />
+            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+          </svg>
+          Checklist
+          <span class="nav-badge" id="badgeChecklist">0</span>
         </button>
         <button class="nav-item" data-cat="Geral">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
@@ -1120,7 +1298,6 @@
 
       <!-- Top bar -->
       <div class="topbar">
-        <!-- Logo mobile (oculto no desktop) -->
         <a href="#" class="logo-mark mobile-logo-item">
           <div class="logo-icon" style="font-family:'Inter',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:-.03em;color:#fff;line-height:1;width:28px;height:28px;border-radius:6px;flex-shrink:0">
             <span style="opacity:.75">/.</span>
@@ -1146,29 +1323,104 @@
         </div>
       </div>
 
-      <!-- Chips de categoria (mobile) -->
+      <!-- Mobile Category Chips -->
       <div class="mobile-cats" id="mobileCats">
         <button class="mcat-chip active" data-mcat="">Todos</button>
         <button class="mcat-chip" data-mcat="DNA da Empresa">DNA</button>
         <button class="mcat-chip" data-mcat="Copywriting">Copy</button>
         <button class="mcat-chip" data-mcat="Imagens">Imagens</button>
         <button class="mcat-chip" data-mcat="Banco de Dados">Dados</button>
+        <button class="mcat-chip" data-mcat="Roadmap">Roadmap</button>
+        <button class="mcat-chip" data-mcat="Checklist">Checklist</button>
         <button class="mcat-chip" data-mcat="Geral">Geral</button>
       </div>
 
-      <!-- Page body -->
-      <div class="page">
-        <div class="page-head">
-          <div>
-            <h1 class="page-title" id="pageTitle">Todos os <em>prompts</em></h1>
-            <p class="page-sub" id="pageSub">0 prompts salvos</p>
+      <!-- SECTION 1: LIBRARY VIEW -->
+      <div id="librarySection" class="page-section">
+        <div class="page">
+          <div class="page-head">
+            <div>
+              <h1 class="page-title" id="pageTitle">Todos os <em>prompts</em></h1>
+              <p class="page-sub" id="pageSub">0 prompts salvos</p>
+            </div>
           </div>
+          <!-- Grid -->
+          <div id="grid"></div>
         </div>
-
-        <!-- Grid -->
-        <div id="grid"></div>
       </div>
+
+      <!-- SECTION 2: GRAPH VIEW -->
+      <div id="graphSection" class="page-section hidden">
+        <div id="graphPage">
+          <div class="graph-bar">
+            <div class="graph-filters">
+              <button class="graph-chip active" data-gcat="">Todos</button>
+              <button class="graph-chip" data-gcat="DNA da Empresa">DNA</button>
+              <button class="graph-chip" data-gcat="Copywriting">Copy</button>
+              <button class="graph-chip" data-gcat="Imagens">Imagens</button>
+              <button class="graph-chip" data-gcat="Banco de Dados">Dados</button>
+              <button class="graph-chip" data-gcat="Roadmap">Roadmap</button>
+              <button class="graph-chip" data-gcat="Checklist">Checklist</button>
+              <button class="graph-chip" data-gcat="Geral">Geral</button>
+            </div>
+            <div class="graph-controls">
+              <button class="btn btn-outline btn-sm" id="graphResetBtn" title="Resetar Visualização">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                Resetar
+              </button>
+            </div>
+          </div>
+          <canvas id="graphCanvas"></canvas>
+        </div>
+      </div>
+
     </main>
+  </div>
+
+  <!-- ════════════════════════════════════════
+     MODAL — Leitor de Prompt (Reader View)
+════════════════════════════════════════ -->
+  <div class="overlay" id="readerOverlay">
+    <div class="modal reader-modal">
+      <div class="modal-head">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="card-tag" id="rTag">Geral</span>
+          <span class="card-date" id="rDate">--</span>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn-icon-sm" id="rEditBtn" title="Editar Prompt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="btn-icon-sm" id="rConnectBtn" title="Gerenciar Conexões">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><line x1="8.5" y1="7.5" x2="15.5" y2="7.5"/><line x1="7.5" y1="8.5" x2="10.5" y2="15.5"/><line x1="16.5" y1="8.5" x2="13.5" y2="15.5"/></svg>
+          </button>
+          <button class="btn-icon-sm" id="closeReaderBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <h2 class="reader-title" id="rTitle">Título do Prompt</h2>
+        <div class="reader-content-box" id="rContent"></div>
+
+        <div class="reader-links-section" id="rLinksSec">
+          <div class="reader-links-title">Prompts Interligados</div>
+          <div class="reader-link-chips" id="rLinkChips"></div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-outline" id="closeReaderFootBtn">Fechar</button>
+        <button class="btn btn-primary" id="rCopyBtn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" />
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+          </svg>
+          Copiar Prompt
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- ════════════════════════════════════════
@@ -1185,7 +1437,6 @@
           </svg>
         </button>
       </div>
-      <div class="modal-divider"></div>
       <div class="modal-body">
         <div class="field">
           <label for="mTitle">Título</label>
@@ -1199,18 +1450,45 @@
             <option>Copywriting</option>
             <option>Imagens</option>
             <option>Banco de Dados</option>
+            <option>Roadmap</option>
+            <option>Checklist</option>
             <option>Geral</option>
           </select>
         </div>
         <div class="field">
           <label for="mContent">Conteúdo</label>
           <textarea id="mContent" placeholder="Cole ou escreva seu prompt aqui…"></textarea>
-          <span class="helper">Use <code>{{variavel}}</code> para inserir campos dinâmicos ao copiar.</span>
+          <span class="helper">Dica: Use <code>{{variavel}}</code> para campos dinâmicos ou <code>[[Nome do Prompt]]</code> para interligar.</span>
         </div>
       </div>
       <div class="modal-foot">
         <button class="btn btn-outline" id="cancelModalBtn">Cancelar</button>
         <button class="btn btn-primary" id="saveBtn">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+     MODAL — Gerenciar Conexões
+════════════════════════════════════════ -->
+  <div class="overlay" id="connectOverlay">
+    <div class="modal" style="max-width:480px">
+      <div class="modal-head">
+        <h2>Interligar Prompts</h2>
+        <button class="btn-icon-sm" id="closeConnectBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:.82rem;color:var(--ink3)">Selecione outros prompts da sua biblioteca para conectar a este prompt no grafo:</p>
+        <div class="conn-list" id="connList"></div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-outline" id="cancelConnectBtn">Cancelar</button>
+        <button class="btn btn-primary" id="saveConnectBtn">Salvar Conexões</button>
       </div>
     </div>
   </div>
@@ -1229,7 +1507,6 @@
           </svg>
         </button>
       </div>
-      <div class="modal-divider"></div>
       <div class="modal-body" id="varFields"></div>
       <div class="modal-foot">
         <button class="btn btn-outline" id="cancelVarBtn">Cancelar</button>
@@ -1259,24 +1536,49 @@
 
   <script>
     /* ─────────────────────────────────────────
-       Data
+       Data State
     ───────────────────────────────────────── */
     const KEY = 'promptbase_v1';
     let prompts = JSON.parse(localStorage.getItem(KEY) || '[]');
     let activeCat = '';
+    let activeView = 'library'; // 'library' | 'graph'
     let editingId = null;
+    let readingId = null;
+    let connectingId = null;
+    let selectedConnIds = new Set();
     let pendingCopy = '';
 
     const save = () => localStorage.setItem(KEY, JSON.stringify(prompts));
     const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-    const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const esc = s => (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     const trunc = (s, n = 160) => s.length > n ? s.slice(0, n) + '…' : s;
     const slug = cat => ({
       'DNA da Empresa': 'dna', 'Copywriting': 'copy',
-      'Imagens': 'img', 'Banco de Dados': 'db', 'Geral': 'geral'
+      'Imagens': 'img', 'Banco de Dados': 'db',
+      'Roadmap': 'roadmap', 'Checklist': 'checklist', 'Geral': 'geral'
     })[cat] || 'geral';
+    const catColors = {
+      'DNA da Empresa': '#c97c2d', 'Copywriting': '#c25d8a',
+      'Imagens': '#4d9dd6', 'Banco de Dados': '#4aaa7a',
+      'Roadmap': '#a855f7', 'Checklist': '#10b981', 'Geral': '#7b6fd4'
+    };
     const fmt = ts => new Date(ts).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
-    const vars = c => [...new Set([...c.matchAll(/\{\{([^}]+)\}\}/g)].map(m => m[1].trim()))];
+    const vars = c => [...new Set([...(c || '').matchAll(/\{\{([^}]+)\}\}/g)].map(m => m[1].trim()))];
+
+    /* Find links matching [[Prompt Title]] */
+    const findTitleLinks = (content) => {
+      const matches = [...(content || '').matchAll(/\[\[(.*?)\]\]/g)].map(m => m[1].trim().toLowerCase());
+      if (!matches.length) return [];
+      return prompts.filter(p => matches.includes(p.title.toLowerCase())).map(p => p.id);
+    };
+
+    /* Get all unique connected prompt IDs (both explicit and [[Title]] matches) */
+    const getConnectedIds = (prompt) => {
+      if (!prompt) return [];
+      const explicit = prompt.connections || [];
+      const titleLinks = findTitleLinks(prompt.content);
+      return [...new Set([...explicit, ...titleLinks])].filter(id => id !== prompt.id);
+    };
 
     /* ─────────────────────────────────────────
        Toast
@@ -1301,11 +1603,13 @@
       document.getElementById('badgeCopy').textContent = counts['Copywriting']?.n || 0;
       document.getElementById('badgeImg').textContent = counts['Imagens']?.n || 0;
       document.getElementById('badgeDB').textContent = counts['Banco de Dados']?.n || 0;
+      document.getElementById('badgeRoadmap').textContent = counts['Roadmap']?.n || 0;
+      document.getElementById('badgeChecklist').textContent = counts['Checklist']?.n || 0;
       document.getElementById('badgeGeral').textContent = counts['Geral']?.n || 0;
     }
 
     /* ─────────────────────────────────────────
-       Render
+       Render Library
     ───────────────────────────────────────── */
     function render() {
       updateBadges();
@@ -1329,20 +1633,21 @@
       const grid = document.getElementById('grid');
       if (!filtered.length) {
         grid.innerHTML = `<div class="empty">
-      <div class="empty-art">✦</div>
-      <h3>${prompts.length ? 'Nada encontrado' : 'Sua biblioteca está vazia'}</h3>
-      <p>${prompts.length ? 'Ajuste sua busca ou mude de categoria.' : 'Crie seu primeiro prompt clicando no botão acima.'}</p>
-    </div>`;
+          <div class="empty-art">✦</div>
+          <h3>${prompts.length ? 'Nada encontrado' : 'Sua biblioteca está vazia'}</h3>
+          <p>${prompts.length ? 'Ajuste sua busca ou mude de categoria.' : 'Crie seu primeiro prompt clicando no botão acima.'}</p>
+        </div>`;
         return;
       }
 
       grid.innerHTML = filtered.map(p => {
         const v = vars(p.content);
+        const conns = getConnectedIds(p);
         return `
-    <div class="card" data-id="${p.id}">
+    <div class="card" data-id="${p.id}" onclick="handleCardClick(event, '${p.id}')">
       <div class="card-top">
         <span class="card-tag tag-${slug(p.category)}">${esc(p.category)}</span>
-        <div style="display:flex;gap:4px">
+        <div style="display:flex;gap:4px" onclick="event.stopPropagation()">
           <button class="btn-icon-sm" onclick="openEdit('${p.id}')" title="Editar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           </button>
@@ -1360,18 +1665,146 @@
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
             ${v.length} var${v.length > 1 ? 's' : ''}
           </span>`: ''}
+          ${conns.length ? `<span class="conn-pill">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><line x1="8.5" y1="7.5" x2="15.5" y2="7.5"/></svg>
+            ${conns.length}
+          </span>`: ''}
         </div>
-        <button class="btn-copy-card" onclick="handleCopy('${p.id}')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          Copiar
-        </button>
+        <div onclick="event.stopPropagation()">
+          <button class="btn-copy-card" onclick="handleCopy('${p.id}')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            Copiar
+          </button>
+        </div>
       </div>
     </div>`;
       }).join('');
     }
 
+    function handleCardClick(e, id) {
+      openReader(id);
+    }
+
     /* ─────────────────────────────────────────
-       Modal helpers
+       Reader View Modal
+    ───────────────────────────────────────── */
+    function openReader(id) {
+      const p = prompts.find(x => x.id === id);
+      if (!p) return;
+      readingId = id;
+
+      const rTag = document.getElementById('rTag');
+      rTag.className = `card-tag tag-${slug(p.category)}`;
+      rTag.textContent = p.category;
+
+      document.getElementById('rDate').textContent = fmt(p.createdAt);
+      document.getElementById('rTitle').textContent = p.title;
+
+      /* Highlight variables {{var}} in reader content */
+      let safeContent = esc(p.content);
+      safeContent = safeContent.replace(/\{\{([^}]+)\}\}/g, '<span class="var-highlight">{{$1}}</span>');
+      document.getElementById('rContent').innerHTML = safeContent;
+
+      /* Render connected prompt chips */
+      const conns = getConnectedIds(p);
+      const chipsEl = document.getElementById('rLinkChips');
+      const secEl = document.getElementById('rLinksSec');
+
+      if (!conns.length) {
+        secEl.classList.add('hidden');
+      } else {
+        secEl.classList.remove('hidden');
+        chipsEl.innerHTML = conns.map(cid => {
+          const cp = prompts.find(x => x.id === cid);
+          if (!cp) return '';
+          return `<button class="reader-link-chip" onclick="openReader('${cp.id}')">
+            <span class="card-tag tag-${slug(cp.category)}" style="font-size:.62rem;padding:1px 5px">${esc(cp.category)}</span>
+            ${esc(cp.title)}
+          </button>`;
+        }).join('');
+      }
+
+      document.getElementById('readerOverlay').classList.add('open');
+    }
+
+    function closeReader() {
+      document.getElementById('readerOverlay').classList.remove('open');
+    }
+
+    document.getElementById('closeReaderBtn').addEventListener('click', closeReader);
+    document.getElementById('closeReaderFootBtn').addEventListener('click', closeReader);
+    document.getElementById('rCopyBtn').addEventListener('click', () => {
+      if (readingId) handleCopy(readingId);
+    });
+    document.getElementById('rEditBtn').addEventListener('click', () => {
+      closeReader();
+      if (readingId) openEdit(readingId);
+    });
+    document.getElementById('rConnectBtn').addEventListener('click', () => {
+      if (readingId) openConnectModal(readingId);
+    });
+
+    /* ─────────────────────────────────────────
+       Connection Manager Modal
+    ───────────────────────────────────────── */
+    function openConnectModal(id) {
+      const p = prompts.find(x => x.id === id);
+      if (!p) return;
+      connectingId = id;
+      selectedConnIds = new Set(p.connections || []);
+
+      const listEl = document.getElementById('connList');
+      const others = prompts.filter(x => x.id !== id);
+
+      if (!others.length) {
+        listEl.innerHTML = `<p style="font-size:.82rem;color:var(--ink3);text-align:center;padding:20px">Não há outros prompts salvos para conectar.</p>`;
+      } else {
+        listEl.innerHTML = others.map(op => {
+          const isSel = selectedConnIds.has(op.id);
+          return `<div class="conn-item ${isSel ? 'selected' : ''}" onclick="toggleConnSelection('${op.id}', this)">
+            <div>
+              <div class="conn-item-title">${esc(op.title)}</div>
+              <span class="card-tag tag-${slug(op.category)}" style="font-size:.65rem;margin-top:4px">${esc(op.category)}</span>
+            </div>
+            <input type="checkbox" ${isSel ? 'checked' : ''} onclick="event.stopPropagation(); toggleConnSelection('${op.id}', this.parentElement)" />
+          </div>`;
+        }).join('');
+      }
+
+      document.getElementById('connectOverlay').classList.add('open');
+    }
+
+    function toggleConnSelection(id, el) {
+      if (selectedConnIds.has(id)) {
+        selectedConnIds.delete(id);
+        el.classList.remove('selected');
+        const cb = el.querySelector('input');
+        if (cb) cb.checked = false;
+      } else {
+        selectedConnIds.add(id);
+        el.classList.add('selected');
+        const cb = el.querySelector('input');
+        if (cb) cb.checked = true;
+      }
+    }
+
+    document.getElementById('closeConnectBtn').addEventListener('click', () => document.getElementById('connectOverlay').classList.remove('open'));
+    document.getElementById('cancelConnectBtn').addEventListener('click', () => document.getElementById('connectOverlay').classList.remove('open'));
+    document.getElementById('saveConnectBtn').addEventListener('click', () => {
+      const p = prompts.find(x => x.id === connectingId);
+      if (p) {
+        p.connections = Array.from(selectedConnIds);
+        save();
+        render();
+        if (readingId === connectingId) openReader(connectingId);
+        if (activeView === 'graph') updateGraphNodes();
+        toast('Conexões atualizadas!');
+      }
+      document.getElementById('connectOverlay').classList.remove('open');
+    });
+
+    /* ─────────────────────────────────────────
+       New / Edit Prompt Modal
     ───────────────────────────────────────── */
     function openPromptModal() {
       document.getElementById('promptOverlay').classList.add('open');
@@ -1407,15 +1840,17 @@
         Object.assign(prompts.find(p => p.id === editingId), { title, category, content, updatedAt: Date.now() });
         toast('Prompt atualizado.');
       } else {
-        prompts.unshift({ id: uid(), title, category, content, createdAt: Date.now() });
+        prompts.unshift({ id: uid(), title, category, content, connections: [], createdAt: Date.now() });
         toast('Prompt salvo!');
       }
       save(); closePromptModal(); render();
+      if (activeView === 'graph') updateGraphNodes();
     }
     function delPrompt(id) {
       if (!confirm('Deletar este prompt?')) return;
       prompts = prompts.filter(p => p.id !== id);
       save(); render(); toast('Prompt removido.');
+      if (activeView === 'graph') updateGraphNodes();
     }
 
     /* ─────────────────────────────────────────
@@ -1475,7 +1910,7 @@
         const text = ev.target.result;
         if (ext === 'json') importJSON(text);
         else if (ext === 'csv') importCSV(text);
-        else importTXT(text);  // .txt e outros
+        else importTXT(text);
         e.target.value = '';
       };
       r.readAsText(f, 'UTF-8');
@@ -1484,8 +1919,6 @@
     function importJSON(text) {
       try {
         const imp = JSON.parse(text);
-
-        /* ── Formato 1: backup do PromptBase (array de prompts) ── */
         if (Array.isArray(imp)) {
           const ids = new Set(prompts.map(p => p.id));
           let n = 0;
@@ -1494,26 +1927,18 @@
           toast(`${n} prompt(s) importado(s) do JSON!`);
           return;
         }
-
-        /* ── Formato 2: objeto agrupado { "categoria": [{name, prompt}] } ── */
         if (typeof imp === 'object' && imp !== null) {
-          // Mapeamento de chaves para categorias do app
           const catMap = {
-            image_generation: 'Imagens',
-            imagens: 'Imagens',
-            copywriting: 'Copywriting',
-            copy: 'Copywriting',
-            dna: 'DNA da Empresa',
-            dna_da_empresa: 'DNA da Empresa',
-            banco_de_dados: 'Banco de Dados',
-            database: 'Banco de Dados',
-            db: 'Banco de Dados',
+            image_generation: 'Imagens', imagens: 'Imagens',
+            copywriting: 'Copywriting', copy: 'Copywriting',
+            dna: 'DNA da Empresa', dna_da_empresa: 'DNA da Empresa',
+            banco_de_dados: 'Banco de Dados', database: 'Banco de Dados', db: 'Banco de Dados',
+            roadmap: 'Roadmap', checklist: 'Checklist'
           };
           const resolveCategory = key => {
             const k = key.toLowerCase().replace(/[\s-]/g, '_');
             return catMap[k] || 'Geral';
           };
-
           let n = 0;
           for (const [key, items] of Object.entries(imp)) {
             if (!Array.isArray(items)) continue;
@@ -1522,7 +1947,7 @@
               const title = (item.name || item.title || '').trim();
               const content = (item.prompt || item.content || item.texto || '').trim();
               if (!title || !content) return;
-              prompts.unshift({ id: uid(), title, category, content, createdAt: Date.now() });
+              prompts.unshift({ id: uid(), title, category, content, connections: [], createdAt: Date.now() });
               n++;
             });
           }
@@ -1530,14 +1955,12 @@
           toast(n ? `${n} prompt(s) importado(s) do JSON!` : 'Nenhum item válido encontrado.', !!n);
           return;
         }
-
         throw new Error('Formato não reconhecido');
       } catch (err) {
         toast('JSON inválido ou fora do formato esperado.', false);
       }
     }
 
-    /* CSV: espera cabeçalho com colunas titulo/title, categoria/category, conteudo/content/prompt */
     function importCSV(text) {
       const lines = text.trim().split(/\r?\n/).filter(l => l.trim());
       if (lines.length < 2) { toast('CSV vazio ou sem dados.', false); return; }
@@ -1553,7 +1976,7 @@
         const category = normalizeCategory(catRaw);
         const content = (coi >= 0 && cols[coi] ? cols[coi].trim() : cols.join(' ').trim());
         if (!content) continue;
-        prompts.unshift({ id: uid(), title, category, content, createdAt: Date.now() });
+        prompts.unshift({ id: uid(), title, category, content, connections: [], createdAt: Date.now() });
         n++;
       }
       save(); render();
@@ -1572,11 +1995,10 @@
     }
 
     function normalizeCategory(raw) {
-      const cats = ['DNA da Empresa', 'Copywriting', 'Imagens', 'Banco de Dados', 'Geral'];
+      const cats = ['DNA da Empresa', 'Copywriting', 'Imagens', 'Banco de Dados', 'Roadmap', 'Checklist', 'Geral'];
       return cats.find(c => c.toLowerCase() === raw.toLowerCase()) || 'Geral';
     }
 
-    /* TXT: abre o modal de criação com o conteúdo pré-preenchido */
     function importTXT(text) {
       editingId = null;
       document.getElementById('modalTitle').textContent = 'Novo prompt (texto importado)';
@@ -1588,22 +2010,327 @@
     }
 
     /* ─────────────────────────────────────────
-       Nav (sidebar filtering)
+       Navigation Switch (Library vs Graph)
     ───────────────────────────────────────── */
-    /* Sidebar nav — sync with mobile chips */
+    function switchView(viewName) {
+      activeView = viewName;
+      document.querySelectorAll('.nav-item[data-view]').forEach(b => {
+        b.classList.toggle('active', b.dataset.view === viewName);
+      });
+      if (viewName === 'library') {
+        document.getElementById('librarySection').classList.remove('hidden');
+        document.getElementById('graphSection').classList.add('hidden');
+      } else {
+        document.getElementById('librarySection').classList.add('hidden');
+        document.getElementById('graphSection').classList.remove('hidden');
+        initGraphCanvas();
+      }
+    }
+
+    document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
+      btn.addEventListener('click', () => switchView(btn.dataset.view));
+    });
+
+    /* Category filtering */
     document.querySelectorAll('.nav-item[data-cat]').forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.nav-item[data-cat]').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         activeCat = btn.dataset.cat;
         document.querySelectorAll('.mcat-chip').forEach(c =>
           c.classList.toggle('active', c.dataset.mcat === activeCat));
         render();
+        if (activeView === 'graph') updateGraphNodes();
+      });
+    });
+
+    document.querySelectorAll('.mcat-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.mcat-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        activeCat = chip.dataset.mcat;
+        document.querySelectorAll('.nav-item[data-cat]').forEach(b =>
+          b.classList.toggle('active', b.dataset.cat === activeCat));
+        render();
+        if (activeView === 'graph') updateGraphNodes();
       });
     });
 
     /* ─────────────────────────────────────────
-       Events
+       Interactive 2D Graph Engine (Canvas)
+    ───────────────────────────────────────── */
+    let canvas, ctx;
+    let graphNodes = [];
+    let graphEdges = [];
+    let graphAnimFrame;
+    let graphCatFilter = '';
+    let zoom = 1;
+    let panX = 0, panY = 0;
+    let isDraggingGraph = false;
+    let dragNode = null;
+    let hoverNode = null;
+    let lastMousePos = { x: 0, y: 0 };
+
+    function initGraphCanvas() {
+      canvas = document.getElementById('graphCanvas');
+      ctx = canvas.getContext('2d');
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      canvas.removeEventListener('mousedown', onCanvasMouseDown);
+      canvas.removeEventListener('mousemove', onCanvasMouseMove);
+      canvas.removeEventListener('mouseup', onCanvasMouseUp);
+      canvas.removeEventListener('wheel', onCanvasWheel);
+
+      canvas.addEventListener('mousedown', onCanvasMouseDown);
+      canvas.addEventListener('mousemove', onCanvasMouseMove);
+      canvas.addEventListener('mouseup', onCanvasMouseUp);
+      canvas.addEventListener('wheel', onCanvasWheel);
+
+      updateGraphNodes();
+      startGraphLoop();
+    }
+
+    function resizeCanvas() {
+      if (!canvas) return;
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+    }
+
+    function updateGraphNodes() {
+      if (!canvas) return;
+      const filtered = prompts.filter(p => (!graphCatFilter || p.category === graphCatFilter));
+      
+      const width = canvas.width || 800;
+      const height = canvas.height || 600;
+      const centerX = width / 2;
+      const centerY = height / 2;
+
+      const existingMap = new Map(graphNodes.map(n => [n.id, n]));
+
+      graphNodes = filtered.map((p, idx) => {
+        if (existingMap.has(p.id)) {
+          const old = existingMap.get(p.id);
+          old.title = p.title;
+          old.category = p.category;
+          return old;
+        }
+        const angle = (idx / (filtered.length || 1)) * 2 * Math.PI;
+        const radius = Math.min(width, height) * 0.35 * Math.random();
+        return {
+          id: p.id,
+          title: p.title,
+          category: p.category,
+          x: centerX + Math.cos(angle) * radius,
+          y: centerY + Math.sin(angle) * radius,
+          vx: 0,
+          vy: 0,
+          radius: 12
+        };
+      });
+
+      graphEdges = [];
+      const nodeIds = new Set(graphNodes.map(n => n.id));
+      filtered.forEach(p => {
+        const conns = getConnectedIds(p);
+        conns.forEach(cid => {
+          if (nodeIds.has(cid)) {
+            if (!graphEdges.some(e => (e.source === p.id && e.target === cid) || (e.source === cid && e.target === p.id))) {
+              graphEdges.push({ source: p.id, target: cid });
+            }
+          }
+        });
+      });
+    }
+
+    function startGraphLoop() {
+      cancelAnimationFrame(graphAnimFrame);
+      function loop() {
+        stepPhysics();
+        drawGraph();
+        graphAnimFrame = requestAnimationFrame(loop);
+      }
+      loop();
+    }
+
+    function stepPhysics() {
+      if (!graphNodes.length) return;
+      const kRepulsion = 1800;
+      const kSpring = 0.04;
+      const restLength = 120;
+      const centerDamp = 0.01;
+
+      const width = canvas.width / 2;
+      const height = canvas.height / 2;
+
+      for (let i = 0; i < graphNodes.length; i++) {
+        const na = graphNodes[i];
+        for (let j = i + 1; j < graphNodes.length; j++) {
+          const nb = graphNodes[j];
+          let dx = nb.x - na.x;
+          let dy = nb.y - na.y;
+          let dist = Math.hypot(dx, dy) || 1;
+          if (dist < 300) {
+            let force = kRepulsion / (dist * dist);
+            let fx = (dx / dist) * force;
+            let fy = (dy / dist) * force;
+            if (na !== dragNode) { na.vx -= fx; na.vy -= fy; }
+            if (nb !== dragNode) { nb.vx += fx; nb.vy += fy; }
+          }
+        }
+      }
+
+      graphEdges.forEach(e => {
+        const na = graphNodes.find(n => n.id === e.source);
+        const nb = graphNodes.find(n => n.id === e.target);
+        if (na && nb) {
+          let dx = nb.x - na.x;
+          let dy = nb.y - na.y;
+          let dist = Math.hypot(dx, dy) || 1;
+          let delta = dist - restLength;
+          let force = delta * kSpring;
+          let fx = (dx / dist) * force;
+          let fy = (dy / dist) * force;
+          if (na !== dragNode) { na.vx += fx; na.vy += fy; }
+          if (nb !== dragNode) { nb.vx -= fx; nb.vy -= fy; }
+        }
+      });
+
+      graphNodes.forEach(n => {
+        if (n !== dragNode) {
+          n.vx += (width - n.x) * centerDamp;
+          n.vy += (height - n.y) * centerDamp;
+          n.vx *= 0.85;
+          n.vy *= 0.85;
+          n.x += n.vx;
+          n.y += n.vy;
+        }
+      });
+    }
+
+    function drawGraph() {
+      if (!ctx || !canvas) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.save();
+      ctx.translate(panX, panY);
+      ctx.scale(zoom, zoom);
+
+      graphEdges.forEach(e => {
+        const na = graphNodes.find(n => n.id === e.source);
+        const nb = graphNodes.find(n => n.id === e.target);
+        if (na && nb) {
+          const isHighlighted = hoverNode && (hoverNode.id === na.id || hoverNode.id === nb.id);
+          ctx.beginPath();
+          ctx.moveTo(na.x, na.y);
+          ctx.lineTo(nb.x, nb.y);
+          ctx.strokeStyle = isHighlighted ? 'rgba(232, 100, 58, 0.8)' : 'rgba(255, 255, 255, 0.12)';
+          ctx.lineWidth = isHighlighted ? 2.5 : 1.5;
+          ctx.stroke();
+        }
+      });
+
+      graphNodes.forEach(n => {
+        const color = catColors[n.category] || '#7b6fd4';
+        const isHovered = hoverNode && hoverNode.id === n.id;
+        const isConnectedToHover = hoverNode && graphEdges.some(e => (e.source === hoverNode.id && e.target === n.id) || (e.target === hoverNode.id && e.source === n.id));
+
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.radius + (isHovered ? 3 : 0), 0, 2 * Math.PI);
+        ctx.fillStyle = color;
+        ctx.shadowColor = color;
+        ctx.shadowBlur = (isHovered || isConnectedToHover) ? 14 : 4;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = isHovered ? '#ffffff' : 'rgba(255, 255, 255, 0.2)';
+        ctx.stroke();
+
+        ctx.font = `${isHovered ? '600' : '400'} 12px Inter, sans-serif`;
+        ctx.fillStyle = isHovered ? '#ffffff' : 'rgba(240, 236, 232, 0.8)';
+        ctx.textAlign = 'center';
+        ctx.fillText(trunc(n.title, 24), n.x, n.y + n.radius + 16);
+      });
+
+      ctx.restore();
+    }
+
+    function getCanvasCoords(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+      return {
+        x: (clientX - rect.left - panX) / zoom,
+        y: (clientY - rect.top - panY) / zoom
+      };
+    }
+
+    function getNodeAt(coords) {
+      return graphNodes.find(n => Math.hypot(n.x - coords.x, n.y - coords.y) <= n.radius + 6);
+    }
+
+    function onCanvasMouseDown(e) {
+      const coords = getCanvasCoords(e);
+      const node = getNodeAt(coords);
+      if (node) {
+        dragNode = node;
+      } else {
+        isDraggingGraph = true;
+        lastMousePos = { x: e.clientX, y: e.clientY };
+      }
+    }
+
+    function onCanvasMouseMove(e) {
+      const coords = getCanvasCoords(e);
+      if (dragNode) {
+        dragNode.x = coords.x;
+        dragNode.y = coords.y;
+        dragNode.vx = 0;
+        dragNode.vy = 0;
+      } else if (isDraggingGraph) {
+        panX += e.clientX - lastMousePos.x;
+        panY += e.clientY - lastMousePos.y;
+        lastMousePos = { x: e.clientX, y: e.clientY };
+      } else {
+        hoverNode = getNodeAt(coords);
+      }
+    }
+
+    function onCanvasMouseUp(e) {
+      if (dragNode) {
+        const coords = getCanvasCoords(e);
+        if (Math.hypot(dragNode.x - coords.x, dragNode.y - coords.y) < 4) {
+          openReader(dragNode.id);
+        }
+        dragNode = null;
+      }
+      isDraggingGraph = false;
+    }
+
+    function onCanvasWheel(e) {
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+      zoom = Math.min(Math.max(0.4, zoom * zoomFactor), 3);
+    }
+
+    document.getElementById('graphResetBtn').addEventListener('click', () => {
+      zoom = 1; panX = 0; panY = 0;
+      updateGraphNodes();
+    });
+
+    document.querySelectorAll('.graph-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.graph-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        graphCatFilter = chip.dataset.gcat;
+        updateGraphNodes();
+      });
+    });
+
+    /* ─────────────────────────────────────────
+       Global Event Listeners
     ───────────────────────────────────────── */
     document.getElementById('newBtn').addEventListener('click', openNew);
     document.getElementById('fabBtn').addEventListener('click', openNew);
@@ -1615,30 +2342,18 @@
     document.getElementById('copyVarBtn').addEventListener('click', applyVarsCopy);
     document.getElementById('searchInput').addEventListener('input', render);
 
-    /* Mobile category chips */
-    document.querySelectorAll('.mcat-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        document.querySelectorAll('.mcat-chip').forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-        activeCat = chip.dataset.mcat;
-        document.querySelectorAll('.nav-item[data-cat]').forEach(b =>
-          b.classList.toggle('active', b.dataset.cat === activeCat));
-        render();
-      });
-    });
-
-    // Backdrop
-    ['promptOverlay', 'varOverlay'].forEach(id => {
+    ['promptOverlay', 'varOverlay', 'readerOverlay', 'connectOverlay'].forEach(id => {
       document.getElementById(id).addEventListener('click', e => {
         if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
       });
     });
 
-    // Keyboard
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
         closePromptModal();
+        closeReader();
         document.getElementById('varOverlay').classList.remove('open');
+        document.getElementById('connectOverlay').classList.remove('open');
       }
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
@@ -1652,17 +2367,15 @@
     render();
 
     /* ─────────────────────────────────────────
-       PWA — Manifest + ícone PNG via Canvas
+       PWA — Manifest + Canvas Icon
     ───────────────────────────────────────── */
     (function () {
-      /* Gera o ícone como PNG usando Canvas (necessário para iOS) */
       function buildIcon(size) {
         const c = document.createElement('canvas');
         c.width = c.height = size;
         const ctx = c.getContext('2d');
-        const r = size * 0.2; // border-radius proporcional
+        const r = size * 0.2;
 
-        /* Fundo arredondado */
         ctx.beginPath();
         ctx.moveTo(r, 0);
         ctx.lineTo(size - r, 0);
@@ -1677,7 +2390,6 @@
         ctx.fillStyle = '#e8643a';
         ctx.fill();
 
-        /* Texto "/." */
         ctx.fillStyle = 'rgba(255,255,255,0.9)';
         ctx.font = `bold ${size * 0.46}px Inter, system-ui, sans-serif`;
         ctx.textAlign = 'center';
@@ -1690,13 +2402,11 @@
       const icon512 = buildIcon(512);
       const icon192 = buildIcon(192);
 
-      /* apple-touch-icon (iOS "Adicionar à Tela de Início") */
       const atLink = document.createElement('link');
       atLink.rel = 'apple-touch-icon';
       atLink.href = icon512;
       document.head.appendChild(atLink);
 
-      /* Web App Manifest */
       const manifest = {
         name: 'PromptBase',
         short_name: 'PromptBase',
